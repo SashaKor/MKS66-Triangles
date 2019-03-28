@@ -3,14 +3,19 @@ from matrix import *
 
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-    pass
+    add_point(polygons, x0, y0, z0)
+    add_point(polygons, x1, y1, z1)
+    add_point(polygons, x2, y2, z2)
 
 
 def draw_polygons( polygons, screen, color ):
-    #looping through polygons
-    for p in polygons:
-        #3 at the a time and drawing
-    pass
+    for i in range(0,len(polygons)-1,3): #jumping by 3
+        m1=polygons[i]
+        m2=polygons[i+1]
+        m3=polygons[i+2]
+        draw_line(int(m1[0]),int(m1[1]),int(m2[0]),int(m2[1]), screen, color)
+        draw_line(int(m2[0]),int(m2[1]),int(m3[0]),int(m3[1]), screen, color)
+        draw_line(int(m3[0]),int(m3[1]),int(m1[0]),int(m1[1]), screen, color)
 
 
 #handles cross Product
