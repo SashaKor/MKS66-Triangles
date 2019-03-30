@@ -1,21 +1,22 @@
 from display import *
 from matrix import *
 
-
+# Method adding pts 3 at a time to polygons matrix
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0)
     add_point(polygons, x1, y1, z1)
     add_point(polygons, x2, y2, z2)
 
-
+# Method drawing triangles by taking points three at a time (culling if need be)
 def draw_polygons( polygons, screen, color ):
-    for i in range(0,len(polygons)-1,3): #jumping by 3
-        m1=polygons[i]
-        m2=polygons[i+1]
-        m3=polygons[i+2]
-        draw_line(int(m1[0]),int(m1[1]),int(m2[0]),int(m2[1]), screen, color)
-        draw_line(int(m2[0]),int(m2[1]),int(m3[0]),int(m3[1]), screen, color)
-        draw_line(int(m3[0]),int(m3[1]),int(m1[0]),int(m1[1]), screen, color)
+    cnt = 0
+    while cnt < len(polygons) - 2: #looping through polygon points 3 at a time
+        cull = backCull(polygons[cnt], polygons[cnt+1], polygons[cnt+2])
+        if not cull:
+            draw_line(int(polygons[cnt][0]), int(polygons[cnt][1]), int(polygons[cnt+1][0]), int(polygons[cnt+1][1]), screen, color)
+            draw_line(int(polygons[cnt+2][0]), int(polygons[cnt+2][1]), int(polygons[cnt+1][0]), int(polygons[cnt+1][1]), screen, color)
+            draw_line(int(polygons[cnt][0]), int(polygons[cnt][1]), int(polygons[cnt+2][0]), int(polygons[cnt+2][1]), screen, color)
+        cnt += 3
 
 
 # Helper method to do cross product given two points
@@ -23,9 +24,15 @@ def crossProduct(p0,p1):
     x = (p0[1] * p1[2]) - (p0[2] * p1[2])
     y = (p0[2] * p1[0]) - (p0[0] * p1[2])
     z = (p0[0] * p1[1]) - (p0[1] * p1[0])
-    return [x,y,z] 
+    return [x,y,z]
 
-
+# Method to determine whether to cull polygon
+def backCull(p0,p1,p2):
+    pt_A = [p1[q] - p0[q] for q in range(3)]
+    pt_B = [p2[q] - p1[q] for q in range(3)]
+    if crossProduct(pt_A, pt_B)[2] < 0: #as discussed in class.
+        return True
+    return False
 
 def add_box( polygons, x, y, z, width, height, depth ):
     x1 = x + width
