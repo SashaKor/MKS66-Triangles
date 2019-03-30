@@ -18,13 +18,12 @@ def draw_polygons( polygons, screen, color ):
         draw_line(int(m3[0]),int(m3[1]),int(m1[0]),int(m1[1]), screen, color)
 
 
-#handles cross Product
-def crossProduct(x0,y0,z0,x1,y1,z1):
-    cx= (y0*z1)-(z0*y1)
-    cy= (z0*x1)-(x0*z1)
-    cz= (x0*y1)-(y0*x1)
-
-    return cx,cy,cz
+# Helper method to do cross product given two points
+def crossProduct(p0,p1):
+    x = (p0[1] * p1[2]) - (p0[2] * p1[2])
+    y = (p0[2] * p1[0]) - (p0[0] * p1[2])
+    z = (p0[0] * p1[1]) - (p0[1] * p1[0])
+    return [x,y,z] 
 
 
 
