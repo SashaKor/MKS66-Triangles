@@ -34,28 +34,30 @@ def backCull(p0,p1,p2):
         return True
     return False
 
+#Drawing box modified to add polygons
 def add_box( polygons, x, y, z, width, height, depth ):
     x1 = x + width
     y1 = y - height
     z1 = z - depth
 
-    #front
-    add_edge(polygons, x, y, z, x1, y, z)
-    add_edge(polygons, x, y1, z, x1, y1, z)
-    add_edge(polygons, x1, y, z, x1, y1, z)
-    add_edge(polygons, x, y, z, x, y1, z)
-
-    #back
-    add_edge(polygons, x, y, z1, x1, y, z1)
-    add_edge(polygons, x, y1, z1, x1, y1, z1)
-    add_edge(polygons, x1, y, z1, x1, y1, z1)
-    add_edge(polygons, x, y, z1, x, y1, z1)
-
-    #sides
-    add_edge(polygons, x, y, z, x, y, z1)
-    add_edge(polygons, x1, y, z, x1, y, z1)
-    add_edge(polygons, x, y1, z, x, y1, z1)
-    add_edge(polygons, x1, y1, z, x1, y1, z1)
+    # Front facing
+    add_polygon(polygons, x, y1, z1, x1, y1, z1, x1, y, z1)
+    add_polygon(polygons, x, y1, z1, x1, y, z1, x, y, z1)
+    # Upper face
+    add_polygon(polygons, x, y, z1, x1, y, z1, x1, y, z)
+    add_polygon(polygons, x, y, z1, x1, y, z, x, y, z)
+    # Bottom face
+    add_polygon(polygons, x, y1, z1, x1, y1, z, x1, y1, z1)
+    add_polygon(polygons, x, y1, z1, x, y1, z, x1, y1, z)
+    # Left face
+    add_polygon(polygons, x1, y1, z1, x1, y1, z, x1, y, z)
+    add_polygon(polygons, x1, y1, z1, x1, y, z, x1, y, z1)
+    # Right face
+    add_polygon(polygons, x, y1, z1, x, y, z, x, y1, z)
+    add_polygon(polygons, x, y1, z1, x, y, z1, x, y, z)
+    # Back face
+    add_polygon(polygons, x, y1, z, x1, y, z, x1, y1, z)
+    add_polygon(polygons, x, y1, z, x, y, z, x1, y, z)
 
 def add_sphere(polygons, cx, cy, cz, r, step ):
     points = generate_sphere(cx, cy, cz, r, step)
