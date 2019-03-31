@@ -7,10 +7,11 @@ def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x1, y1, z1)
     add_point(polygons, x2, y2, z2)
 
+
 # Method drawing triangles by taking points three at a time (culling if need be)
 def draw_polygons( polygons, screen, color ):
     cnt = 0
-    while cnt < len(polygons) - 2: #looping through polygon points 3 at a time
+    while cnt < len(polygons) - 1: #looping through polygon points 3 at a time
         cull = backCull(polygons[cnt], polygons[cnt+1], polygons[cnt+2])
         if not cull:
             draw_line(int(polygons[cnt][0]), int(polygons[cnt][1]), int(polygons[cnt+1][0]), int(polygons[cnt+1][1]), screen, color)
@@ -58,7 +59,6 @@ def add_box( polygons, x, y, z, width, height, depth ):
     # Back face
     add_polygon(polygons, x, y1, z, x1, y, z, x1, y1, z)
     add_polygon(polygons, x, y1, z, x, y, z, x1, y, z)
-
 # Method to add sphere to polygons matrix
 def add_sphere(polygons, cx, cy, cz, r, step ):
     #first generate points on sphere

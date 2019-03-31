@@ -139,7 +139,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
 
         elif line == 'display' or line == 'save':
             clear_screen(screen)
-            draw_lines(edges, screen, color)
+            draw_polygons(edges, screen, color)
 
             if line == 'display':
                 display(screen)
