@@ -59,25 +59,41 @@ def add_box( polygons, x, y, z, width, height, depth ):
     add_polygon(polygons, x, y1, z, x1, y, z, x1, y1, z)
     add_polygon(polygons, x, y1, z, x, y, z, x1, y, z)
 
+# Method to add sphere to polygons matrix
 def add_sphere(polygons, cx, cy, cz, r, step ):
-    points = generate_sphere(cx, cy, cz, r, step)
+    #first generate points on sphere
+    sphere = generate_sphere(cx, cy, cz, r, step)
 
-    lat_start = 0
-    lat_stop = step
-    longt_start = 0
-    longt_stop = step
+    step += 1
+    i = 0
+    while i < step - 2:
+        q = 0
+        # connecting triangles
+        while q < step - 1:
+            if not q == 0 :
+                add_polygon(polygons, sphere[i*step + q][0], sphere[i*step + q][1], sphere[i*step + q][2],
+                        sphere[(i+1)*step + q][0], sphere[(i+1)*step + q][1], sphere[(i+1)*step + q][2],
+                        sphere[i*step + q + 1][0], sphere[i*step + q + 1][1], sphere[i*step + q + 1][2])
 
-    step+= 1
-    for lat in range(lat_start, lat_stop):
-        for longt in range(longt_start, longt_stop+1):
-            index = lat * step + longt
+            if not q == step - 2:
+                add_polygon(polygons, sphere[(i+1)*step + q][0], sphere[(i+1)*step + q][1], sphere[(i+1)*step + q][2],
+                        sphere[(i+1)*step + q + 1][0], sphere[(i+1)*step + q + 1][1], sphere[(i+1)*step + q + 1][2],
+                        sphere[i*step + q + 1][0], sphere[i*step + q + 1][1], sphere[i*step + q + 1][2])
+            q += 1
+        i += 1
 
-            add_edge(polygons, points[index][0],
-                     points[index][1],
-                     points[index][2],
-                     points[index][0]+1,
-                     points[index][1]+1,
-                     points[index][2]+1 )
+    q = 0
+    while q < step - 1: # second loop for the back
+
+        add_polygon(polygons,sphere[i*step + q][0], sphere[i*step + q][1], sphere[i*step + q][2],
+                sphere[q][0], sphere[q][1], sphere[q][2],
+                sphere[i*step + q + 1][0], sphere[i*step + q + 1][1], sphere[i*step + q + 1][2])
+
+        add_polygon(polygons, sphere[q][0], sphere[q][1], sphere[q][2],
+                sphere[q + 1][0], sphere[q + 1][1], sphere[q + 1][2],
+                sphere[i*step + q + 1][0], sphere[i*step + q + 1][1], sphere[i*step + q + 1][2])
+        q += 1
+
 
 def generate_sphere( cx, cy, cz, r, step ):
     points = []
@@ -101,23 +117,43 @@ def generate_sphere( cx, cy, cz, r, step ):
     return points
 
 def add_torus(polygons, cx, cy, cz, r0, r1, step ):
-    points = generate_torus(cx, cy, cz, r0, r1, step)
+    #generate torus points first, then find triangles
+    torus = generate_torus(cx, cy, cz, r0, r1, step)
 
-    lat_start = 0
-    lat_stop = step
-    longt_start = 0
-    longt_stop = step
+    i = 0
+    while i < step - 1:
+        q = 0
+        while q < step - 1:
+            add_polygon(polygons,torus[i*step + q][0], torus[i*step + q][1], torus[i*step + q][2],
+                    torus[(i+1)*step + q][0], torus[(i+1)*step + q][1], torus[(i+1)*step + q][2],
+                    torus[i*step + q + 1][0], torus[i*step + q + 1][1], torus[i*step + q + 1][2])
 
-    for lat in range(lat_start, lat_stop):
-        for longt in range(longt_start, longt_stop):
-            index = lat * step + longt
+            add_polygon(polygons, torus[(i+1)*step + q][0], torus[(i+1)*step + q][1], torus[(i+1)*step + q][2],
+                    torus[(i+1)*step + q + 1][0], torus[(i+1)*step + q + 1][1], torus[(i+1)*step + q + 1][2],
+                    torus[i*step + q + 1][0], torus[i*step + q + 1][1], torus[i*step + q + 1][2])
+            q += 1
 
-            add_edge(polygons, points[index][0],
-                     points[index][1],
-                     points[index][2],
-                     points[index][0]+1,
-                     points[index][1]+1,
-                     points[index][2]+1 )
+        add_polygon(polygons,torus[i*step + q][0],torus[i*step + q][1],torus[i*step + q][2],
+                torus[(i+1)*step + q][0],torus[(i+1)*step + q][1],torus[(i+1)*step + q][2],
+                torus[i*step][0],torus[i*step][1],torus[i*step][2])
+
+        add_polygon(polygons,torus[(i+1)*step + q][0],torus[(i+1)*step + q][1],torus[(i+1)*step + q][2],
+                torus[(i+1)*step][0],torus[(i+1)*step][1],torus[(i+1)*step][2],
+                torus[i*step][0],torus[i*step][1],torus[i*step][2])
+        i += 1
+
+    q = 0
+    while q < step - 1:
+
+        add_polygon(polygons,torus[i*step + q][0],torus[i*step + q][1],torus[i*step + q][2],
+                torus[q][0],torus[q][1],torus[q][2],
+                torus[i*step + q + 1][0],torus[i*step + q + 1][1],torus[i*step + q + 1][2])
+
+        add_polygon(polygons,torus[q][0],torus[q][1],torus[q][2],
+                torus[q + 1][0],torus[q + 1][1],torus[q + 1][2],
+                torus[i*step + q + 1][0],torus[i*step + q + 1][1],torus[i*step + q + 1][2])
+        q += 1
+
 
 def generate_torus( cx, cy, cz, r0, r1, step ):
     points = []
